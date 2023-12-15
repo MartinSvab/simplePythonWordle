@@ -2,21 +2,19 @@ from urllib.request import urlopen
 import random
 import os
 import time
+import json
 
+
+#Other functions
 def cls():
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def getDataFromWeb(url):
-    response = urlopen(url)
-    return response.read().decode('utf-8').split("\",\"")
 
-print("Fetching words...")
-data = getDataFromWeb('https://random-word-api.herokuapp.com/all?lang=en')
-data.pop(0)
-data.pop(len(data)-1)
-print("Words fetched successfully!\nStarting game!")
-time.sleep(0.5)
-cls()
+
+
+
+
+#Functions used in main cycle
 
 def guessWrong(guess, word, correctlyGuessed):
     for letterInGuess in guess:
@@ -26,6 +24,7 @@ def guessWrong(guess, word, correctlyGuessed):
                     correctlyGuessed[index] = letterInGuess
         else:
             print(letterInGuess + " is not in the word!")
+    cls()
     for letter in correctlyGuessed: print(letter, end=" ")
 
 
@@ -37,10 +36,39 @@ def getGuess():
         else: print("This word is not in the list. Try again")
 
 
+def getDataFromWeb(url):
+    response = urlopen(url)
+    return response.read().decode('utf-8').split("\",\"")
+
+def findInDictionary(word):
+    dictionary = getDataFromWeb("https://api.dictionaryapi.dev/api/v2/entries/en/hello")
+
+    if isinstance(dictionary, list) and dictionary:
+        search_string = "abreacted"
+
+        try:
+            index = [entry.get("word", "").lower() for entry in dictionary].index(search_string.lower())
+            print(f"Index of '{search_string}': {index}")
+        except ValueError:
+            print(f"'{search_string}' not found in the list.")
+    else:
+        print("Invalid or empty data returned by the API.")
 
 
+#Getting data from internet, starting game
 
-while(True):
+print("Fetching words...")
+data = getDataFromWeb('https://random-word-api.herokuapp.com/all?lang=en')
+data.pop(0)
+data.pop(len(data)-1)
+print("Words fetched successfully!\nStarting game!")
+time.sleep(0.5)
+cls()
+
+
+#main cycle
+
+while(False):
     word = random.choice(data)
     correctlyGuessed = []
 
@@ -61,3 +89,5 @@ while(True):
 
         if "_" not in correctlyGuessed:
             print("\n\nYOU WIN")
+
+findInDictionary("random")
