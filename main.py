@@ -1,14 +1,22 @@
 from urllib.request import urlopen
 import random
+import os
+import time
 
+def cls():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
 def getDataFromWeb(url):
     response = urlopen(url)
-    return response.read().decode('utf-8').splitlines()
+    return response.read().decode('utf-8').split("\",\"")
 
-
-data = getDataFromWeb('https://www.mit.edu/~ecprice/wordlist.10000')
-
+print("Fetching words...")
+data = getDataFromWeb('https://random-word-api.herokuapp.com/all?lang=en')
+data.pop(0)
+data.pop(len(data)-1)
+print("Words fetched successfully!\nStarting game!")
+time.sleep(0.5)
+cls()
 
 def guessWrong(guess, word, correctlyGuessed):
     for letterInGuess in guess:
@@ -21,7 +29,7 @@ def guessWrong(guess, word, correctlyGuessed):
     for letter in correctlyGuessed: print(letter, end=" ")
 
 
-def getGuess(data):
+def getGuess():
     while(True):
         guess = input()
         if guess in data:
@@ -43,7 +51,7 @@ while(True):
     print("\nGuess!")
 
     while(True):
-        guess = getGuess(data)
+        guess = getGuess()
 
         if(guess == word):
             print("Correct!")
