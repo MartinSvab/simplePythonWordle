@@ -61,12 +61,28 @@ def endGame(word):
     print("Congrats! The word was " + word + "!")
     printSpaces(1)
     print("It took you " + str(guesses) + " guesses!")
-    printSpaces(2)
+    printSpaces(3)
+    findInDictionary(word)
+    printSpaces(3)
     print("Would you like to play again?")
     if input("Press any key to play again, type exit to quit").lower() == "exit":
         return False
     else:
         return True
+
+def findInDictionary(word):
+    dictionary = getDataFromWeb("https://api.dictionaryapi.dev/api/v2/entries/en/hello")
+
+    if isinstance(dictionary, list) and dictionary:
+        search_string = "abreacted"
+
+        try:
+            index = [entry.get("word", "").lower() for entry in dictionary].index(search_string.lower())
+            print(f"Index of '{search_string}': {index}")
+        except ValueError:
+            print(f"'{search_string}' not found in the list.")
+    else:
+        print("Invalid or empty data returned by the API.")
 
 
 # Getting data from internet, starting game
