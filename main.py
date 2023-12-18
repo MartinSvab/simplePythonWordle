@@ -24,6 +24,7 @@ def startGame():
 # Functions used in main cycle
 
 def guessWrong(guess, word, correctlyGuessed):
+    cls()
     for letterInGuess in guess:
         if letterInGuess in word:
             for index, val in enumerate(word):
@@ -31,7 +32,7 @@ def guessWrong(guess, word, correctlyGuessed):
                     correctlyGuessed[index] = letterInGuess
         else:
             print(letterInGuess + " is not in the word!")
-    cls()
+    printSpaces(2)
     for letter in correctlyGuessed: print(letter, end=" ")
 
 
@@ -45,7 +46,6 @@ def getGuess():
             print("This word is not in the list. Try again")
 
 
-
 def getDataFromWeb(url):
     response = urlopen(url)
     return response.read().decode('utf-8').split("\",\"")
@@ -56,6 +56,19 @@ def printSpaces(numberOfSpaces):
         print(" ")
 
 
+def endGame(word):
+    cls()
+    print("Congrats! The word was " + word + "!")
+    printSpaces(1)
+    print("It took you " + str(guesses) + " guesses!")
+    printSpaces(2)
+    print("Would you like to play again?")
+    if input("Press any key to play again, type exit to quit").lower() == "exit":
+        return False
+    else:
+        return True
+
+
 # Getting data from internet, starting game
 
 data = startGame()
@@ -63,9 +76,9 @@ data = startGame()
 # main cycle
 
 while True:
-    printSpaces(2)
     word = random.choice(data)
     correctlyGuessed = []
+    guesses = 0
 
     for letter in word:
         print("_", end=" ")
@@ -74,15 +87,16 @@ while True:
     print("\nGuess!")
 
     while True:
-        guess = getGuess()
+        guess = getGuess(guesses)
+        guesses + 1
 
         if guess == word:
-            print("Correct!")
-            printSpaces(3)
             break
-
         else:
             guessWrong(guess, word, correctlyGuessed)
 
         if "_" not in correctlyGuessed:
-            print("\n\nYOU WIN")
+            break
+
+    if not endGame(word): break
+    cls()
